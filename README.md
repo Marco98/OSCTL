@@ -30,16 +30,20 @@ This will restart the following services:
 * openstack-nova-conductor.service
 * openstack-nova-novncproxy.service
 
+
 **compute**
 * libvirtd.service
 * openstack-nova-compute.service
+
 
 **blockstoragectl**
 * openstack-cinder-api.service
 * openstack-cinder-scheduler.service
 
+
 **blockstorage**
 * openstack-cinder-volume.service
+
 
 **networking**
 * neutron-server.service
@@ -49,6 +53,7 @@ This will restart the following services:
 * neutron-l3-agent.service
 * neutron-linuxbridge-agent.service
 	
+
 **image**
 * openstack-glance-api.service
 * openstack-glance-registry.service
