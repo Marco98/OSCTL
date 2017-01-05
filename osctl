@@ -1,0 +1,116 @@
+#!/bin/bash
+#-------------------Variablen---------------------
+declare -a computectl=( "openstack-nova-api.service" "openstack-nova-consoleauth.service" "openstack-nova-scheduler.service" "openstack-nova-conductor.service" "openstack-nova-novncproxy.service" )
+declare -a compute=( "libvirtd.service" "openstack-nova-compute.service" )
+declare -a blockstoragectl=( "openstack-cinder-api.service" "openstack-cinder-scheduler.service" )
+declare -a blockstorage=( "openstack-cinder-volume.service" )
+declare -a networking=( "neutron-server.service" "neutron-linuxbridge-agent.service" "neutron-dhcp-agent.service" "neutron-metadata-agent.service" "neutron-l3-agent.service" "neutron-linuxbridge-agent.service" )
+declare -a image=( "openstack-glance-api.service" "openstack-glance-registry.service" )
+#-------------------------------------------------
+color() {
+	local n="\033[0m"
+	local g="\033[32m"
+	local y="\033[33m"
+	local r="\033[31m"
+	eval "echo -en \"\$$1\""
+	echo -e "$2$n"
+}
+remote() {
+	ssh "$1" "$2" &> /dev/null
+}
+start(){
+	remote "$1" "systemctl start $2"
+	case "$?" in
+        "0")
+            color g "$2 started successfully!"
+            ;;
+        "1")
+            color r "$2 you are not permitted to do that!"
+            ;;
+        *)
+            color y "$? unknown return code!"
+            ;;
+	esac
+}
+stop() {
+	remote "$1" "systemctl stop $2"
+	case "$?" in
+        "0")
+            color g "$2 stopped successfully!"
+            ;;
+        "1")
+            color r "$2 you are not permitted to do that!"
+            ;;
+        *)
+            color y "$? unknown return code!"
+            ;;
+	esac
+}
+restart() {
+	remote "$1" "systemctl restart $2"
+	case "$?" in
+        "0")
+            color g "$2 restarted successfully!"
+            ;;
+        "1")
+            color r "$2 you are not permitted to do that!"
+            ;;
+        *)
+            color y "$? unknown return code!"
+            ;;
+	esac
+}
+status() {
+	remote "$1" "systemctl status $2"
+	case "$?" in
+        "0")
+            color g "$2 is active!"
+            ;;
+        "3")
+            color r "$2 is inactive!"
+            ;;
+        *)
+            color y "$? unknown return code!"
+            ;;
+	esac
+}
+if [ -v $1 ]
+then
+	echo "Usage: osctl service {start|stop|restart|status} remote"
+	exit
+fi
+eval array=\( \${${1}[@]} \)
+if [ ${#array[@]} -eq 0 ]
+then
+  color r "The service does not exist"
+  exit
+fi
+case "$2" in
+        start)
+			for i in "${array[@]}"
+				do
+				start "$3" "$i"
+			done
+            ;;
+        stop)
+			for i in "${array[@]}"
+				do
+				stop "$3" "$i"
+			done
+            ;;
+        status)
+			for i in "${array[@]}"
+				do
+				status "$3" "$i"
+			done
+            ;;
+        restart)
+			for i in "${array[@]}"
+				do
+				restart "$3" "$i"
+			done
+            ;;
+        *)
+            echo "Usage: osctl service {start|stop|restart|status} remote"
+            ;;
+esac
