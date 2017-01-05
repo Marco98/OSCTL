@@ -1,12 +1,12 @@
 #!/bin/bash
-#-------------------Variablen---------------------
+#-----------------System Presets-------------------
 declare -a computectl=( "openstack-nova-api.service" "openstack-nova-consoleauth.service" "openstack-nova-scheduler.service" "openstack-nova-conductor.service" "openstack-nova-novncproxy.service" )
 declare -a compute=( "libvirtd.service" "openstack-nova-compute.service" )
 declare -a blockstoragectl=( "openstack-cinder-api.service" "openstack-cinder-scheduler.service" )
 declare -a blockstorage=( "openstack-cinder-volume.service" )
 declare -a networking=( "neutron-server.service" "neutron-linuxbridge-agent.service" "neutron-dhcp-agent.service" "neutron-metadata-agent.service" "neutron-l3-agent.service" "neutron-linuxbridge-agent.service" )
 declare -a image=( "openstack-glance-api.service" "openstack-glance-registry.service" )
-#-------------------------------------------------
+#--------------------------------------------------
 color() {
 	local n="\033[0m"
 	local g="\033[32m"
