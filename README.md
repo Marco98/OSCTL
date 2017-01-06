@@ -8,7 +8,7 @@ osctl service {start|stop|restart|status} remote
 ## Installation:
 To install the script as intended just drop it in at **/usr/local/bin/**
 ```
-sudo wget -O /usr/local/bin/osctl  https://raw.githubusercontent.com/Marco98/OSCTL/master/osctl
+sudo wget -O /usr/local/bin/osctl  https://raw.githubusercontent.com/Marco98/OpenStackCTL/master/osctl
 sudo chmod +x /usr/local/bin/osctl
 ```
 ## Example:
