@@ -3,7 +3,7 @@ OSCTL is a simple bash script that can be used to quickly restart all OpenStack 
 
 ## Usage:
 ```
-osctl service {start|stop|restart|status} remote
+osctl {service|all|list} [start|stop|restart|status] remote
 ```
 ## Installation:
 To install the script as intended just drop it in at **/usr/local/bin/**

@@ -6,6 +6,7 @@ declare -a blockstoragectl=( "openstack-cinder-api.service" "openstack-cinder-sc
 declare -a blockstorage=( "openstack-cinder-volume.service" )
 declare -a networking=( "neutron-server.service" "neutron-linuxbridge-agent.service" "neutron-dhcp-agent.service" "neutron-metadata-agent.service" "neutron-l3-agent.service" "neutron-linuxbridge-agent.service" )
 declare -a image=( "openstack-glance-api.service" "openstack-glance-registry.service" )
+declare -a all=( "computectl" "compute" "blockstoragectl" "blockstorage" "networking" "image" )
 #--------------------------------------------------
 color() {
 	local n="\033[0m"
@@ -27,6 +28,9 @@ start(){
 		"1")
 			color r "You dont have the required permissions to start $2"
 			;;
+		"255")
+			color r "SSH Error"
+			;;
 		*)
 			color y "(yet) unknown return code: $?"
 			;;
@@ -40,6 +44,9 @@ stop() {
 			;;
 		"1")
 			color r "You dont have the required permissions to stop $2"
+			;;
+		"255")
+			color r "SSH Error"
 			;;
 		*)
 		color y "(yet) unknown return code: $?"
@@ -69,22 +76,46 @@ status() {
 		"3")
 			color r "$2 is inactive"
 			;;
+		"255")
+			color r "SSH Error"
+			;;
 		*)
 			color y "(yet) unknown return code: $?"
 			;;
 	esac
 }
+if [ "$1" = "list" ]
+then
+	for i in "${all[@]}"
+		do
+		echo "$i";
+	done
+	exit
+fi
 if [ -z ${1+x} ]
 then
-	echo "Usage: osctl service {start|stop|restart|status} remote"
+	echo "Usage: osctl {service|all|list} [start|stop|restart|status] remote"
 	echo "  Example: osctl computectl restart 192.168.0.3"
 	exit 1
 fi
-eval array=\( \${${1}[@]} \)
-if [ ${#array[@]} -eq 0 ]
+if [ "$1" = "all" ]
 then
-	color r "The service \"$1\" does not exist"
-	exit 3
+array=()
+for i in "${all[@]}"
+do
+	eval array2=\( \${${i}[@]} \)
+	for i2 in "${array2[@]}"
+	do
+		array+=($i2)
+	done
+done
+else
+	eval array=\( \${${1}[@]} \)
+	if [ ${#array[@]} -eq 0 ]
+	then
+		color r "The service \"$1\" does not exist"
+		exit 3
+	fi
 fi
 case "$2" in
 	start)
@@ -112,7 +143,7 @@ case "$2" in
 		done
 		;;
 	*)
-		echo "Usage: osctl service {start|stop|restart|status} remote"
+		echo "Usage: osctl {service|all|list} [start|stop|restart|status] remote"
 		echo "  Example: osctl computectl restart 192.168.0.3"
 		exit 2
 		;;
