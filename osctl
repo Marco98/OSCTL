@@ -28,6 +28,9 @@ start(){
 		"1")
 			color r "You dont have the required permissions to start $2"
 			;;
+		"5")
+			color r "Service $2 not found"
+			;;
 		"255")
 			color r "SSH Error"
 			;;
@@ -44,6 +47,9 @@ stop() {
 			;;
 		"1")
 			color r "You dont have the required permissions to stop $2"
+			;;
+		"5")
+			color r "Service $2 not found"
 			;;
 		"255")
 			color r "SSH Error"
@@ -62,6 +68,9 @@ restart() {
 		"1")
 			color r "You dont have the required permissions to restart $2"
 			;;
+		"5")
+			color r "Service $2 not found"
+			;;
 		*)
 			color y "(yet) unknown return code: $?"
 			;;
@@ -75,6 +84,9 @@ status() {
 			;;
 		"3")
 			color r "$2 is inactive"
+			;;
+		"5")
+			color r "Service $2 not found"
 			;;
 		"255")
 			color r "SSH Error"
